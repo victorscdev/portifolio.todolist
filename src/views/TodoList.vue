@@ -1,58 +1,49 @@
 <template>
-    <v-container id="toDoList">
-        <v-row>
-            <v-col cols="10">
-                <v-text-field 
-                    label="Nova Tafera" 
-                    placeholder="Escreva uma tarefa"
-                    v-model="firebase.database.task.name"
-                    @keyup.enter="setTaskDatabase"
-                    >
-                </v-text-field>
-            </v-col>
-            <v-col cols="1">
-                <v-btn 
-                    large color="primary" 
-                    @click="setTaskDatabase"
-                    >Adicionar
-                </v-btn>
-            </v-col>
-        </v-row>
+    <section id="toDoList">
+        <v-container>
+            <v-row>
+                <v-col cols="10">
+                    <v-text-field 
+                        label="Nova Tafera" 
+                        placeholder="Escreva uma tarefa"
+                        v-model="firebase.database.task.name"
+                        @keyup.enter="setTaskDatabase"
+                        >
+                    </v-text-field>
+                </v-col>
+                <v-col cols="1">
+                    <v-btn 
+                        large color="primary" 
+                        @click="setTaskDatabase"
+                        >Adicionar
+                    </v-btn>
+                </v-col>
+            </v-row>
 
-        <v-row>
-            <v-col cols="12">
-                <v-card class="v-card" v-for="item in firebase.database.tasks" :key="item.id">
-                    <div class="view-task">
-                        <h2>{{ item.name }}</h2>
-                        <v-text-field
-                            placeholder="Edite sua tarefa!"
-                            v-model="firebase.database.task.updataName[item.id]"
-                            >
-                        </v-text-field>
-                        <v-btn color="accent" @click="putTaskDatabase(item.id)">
-                            <v-icon>mdi-pen</v-icon>
-                            Editar
-                        </v-btn>
-                        <v-btn color="red" @click="deleteTaskDatabase(item.id)">
-                            <v-icon>mdi-delete</v-icon>
-                            Deletar
-                        </v-btn>
-                    </div>
-                </v-card>
-            </v-col>
-        </v-row>
-
-        <v-btn
-            @click.prevent="signOut"
-            color="danger"
-            elevation="4"
-        >
-        Sair
-        </v-btn>
-        
-
-
-    </v-container>
+            <v-row>
+                <v-col cols="12">
+                    <v-card class="v-card" v-for="item in firebase.database.tasks" :key="item.id">
+                        <div class="view-task">
+                            <h2>{{ item.name }}</h2>
+                            <v-text-field
+                                placeholder="Edite sua tarefa!"
+                                v-model="firebase.database.task.updataName[item.id]"
+                                >
+                            </v-text-field>
+                            <v-btn color="accent" @click="putTaskDatabase(item.id)">
+                                <v-icon>mdi-pen</v-icon>
+                                Editar
+                            </v-btn>
+                            <v-btn color="red" @click="deleteTaskDatabase(item.id)">
+                                <v-icon>mdi-delete</v-icon>
+                                Deletar
+                            </v-btn>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </section>
 </template>
 
 <script>
@@ -74,7 +65,7 @@ export default {
             },
             authentication: {
                 fireAuth: firebase.auth(),
-                userUID: ''
+                userUID: '',
             },
         },
     }),
@@ -160,20 +151,13 @@ export default {
                     console.log(`Error: ${error}`);
                 });
         },
-        signOut() {
-            firebase
-                .auth()
-                .signOut()
-                .then(() => {
-                    this.$router.replace('/login')
-                })
-        },
+        
     },
     mounted() {
         this.loggedInUser()
         setTimeout(() => {
             this.getTastkDatabase();
-        }, 100);
+        }, 1);
     }
 }
 </script>

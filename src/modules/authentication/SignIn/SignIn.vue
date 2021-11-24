@@ -1,5 +1,5 @@
 <template>
-    <v-main id="pageSignIn">
+    <section id="pageSignIn">
         <v-container>
             <v-row>
                 <v-col offset-md="3" md="6" cols="12">
@@ -51,7 +51,7 @@
                 </v-col>
             </v-row>
         </v-container>
-    </v-main>
+    </section>
 </template>
 
 <script>
@@ -95,6 +95,9 @@ export default {
                 .signInWithEmailAndPassword(this.email, this.password)
                 .then(() => {
                     this.$router.replace('/todolist');
+                })
+                .catch((error) => {
+                    alert(error)
                 })
         }
     }
@@ -176,7 +179,7 @@ export default {
                     &:hover {
                         color: #207fd8;
                     }
-                     &.primary {
+                    &.primary {
                         background-color: #45090c !important;
                         border-color: #45090c !important;
                     }
