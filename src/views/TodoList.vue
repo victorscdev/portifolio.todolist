@@ -2,6 +2,9 @@
     <section id="toDoList">
         <v-container>
             <v-row>
+                <v-col cols="12">
+                    <h1>Minhas Tarefas</h1>
+                </v-col>
                 <v-col cols="10">
                     <v-text-field 
                         label="Nova Tafera" 
@@ -164,6 +167,9 @@ export default {
 
 <style lang="scss" scoped>
     #toDoList {
+        h1 {
+            color: #121623;
+        }
         .v-card {
             display: flex;
             align-items: center;

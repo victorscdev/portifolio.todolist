@@ -62,21 +62,24 @@
             <v-divider></v-divider>
 
             <v-list
+                class="navigation-list"
                 dense
                 nav
             >
                 <v-list-item
-                v-for="item in items"
-                :key="item.title"
+                v-for="(navigation, index) in navigations"
+                :key="index"
                 link
                 >
-                <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </v-list-item-icon>
+                <router-link class="navigation-router" :to="navigation.link">
+                    <v-list-item-icon>
+                        <v-icon>{{ navigation.icon }}</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>{{ navigation.title }}</v-list-item-title>
+                    </v-list-item-content>
+                </router-link>
 
-                <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item-content>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -102,15 +105,22 @@ export default {
                 userUID: '',
             }
         },
+        navigations: [
+            {
+                link: '/todolist',
+                title: 'Minhas Tarefas', 
+                icon: 'mdi-checkbox-marked-circle-plus-outline' 
+            },
+            {
+                link: '/myaccount',
+                title: 'Minha Conta', 
+                icon: 'mdi-account' 
+            },
+        ],
         clipped: true,
         drawer: true,
         fixed: false,
         miniVariant: false,
-        items: [
-            { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-            { title: 'Photos', icon: 'mdi-image' },
-            { title: 'About', icon: 'mdi-help-box' },
-        ],
         right: null,
     }),
     methods: {
@@ -164,7 +174,8 @@ export default {
                     window.location.reload(true)
                     setTimeout(() => {
                         this.$router.replace('/login')
-                    }, 100);
+                    }, 500);
+                    window.location.reload(true)
                 })
         },
     },
@@ -222,8 +233,31 @@ export default {
         position: fixed;
         top: 64px;
         left: 0;
-        .router-link {
-            width: 100%;
+
+        .v-list-item__content {
+            .router-link {
+                width: 100%;
+            }
+        }
+        hr[role="separator"] {
+            border-color: #f4f4f4;
+        }
+        
+        .navigation-list {
+            .navigation-router {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                .v-list-item__icon {
+                    .v-icon {
+                        background: #121623;
+                        color: #f4f4f4;
+                    }
+                }
+                .v-list-item__title {
+                    color: #f4f4f4;
+                }
+            }
         }
     }
 </style>

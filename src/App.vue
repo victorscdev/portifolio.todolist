@@ -42,6 +42,7 @@ export default {
 </script>
 
 <style lang="scss">
+  @import 'assets/scss/import.scss';
   * {
     font-family: 'Quicksand', sans-serif;
   }

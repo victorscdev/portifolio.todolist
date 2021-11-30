@@ -1,0 +1,71 @@
+.modal-error {
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  .overlay {
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    .modal-card {
+      background: $color-6;
+      box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
+        0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%) !important;
+      border-radius: 24px 0;
+      overflow: hidden;
+      .modal-header {
+        background: $color-1;
+        border-radius: 24px 0 0 0;
+        padding: 24px 24px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        h2 {
+          color: $color-6;
+        }
+        .v-btn {
+          background-color: $color-4;
+          color: $color-1;
+        }
+      }
+      .modal-body {
+        border-radius: 0 0 0 24px;
+        padding: 16px 24px 24px;
+        h4 {
+          color: $color-1;
+          margin-bottom: 16px;
+        }
+        ul {
+          li {
+            margin-bottom: 8px;
+            &:last-of-type {
+              margin-bottom: 0;
+            }
+            &.erro {
+              color: $color-7;
+            }
+            &.information {
+              color: $color-3;
+            }
+          }
+        }
+        .box-btn {
+          margin-top: 16px;
+          margin-bottom: 0;
+          .btn-no {
+            margin-right: 8px;
+          }
+          .btn-yes {
+            background-color: $color-4;
+            color: $color-6;
+          }
+        }
+      }
+    }
+  }
+}
