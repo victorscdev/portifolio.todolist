@@ -84,28 +84,6 @@ export default {
 		},
 	}),
 	methods: {
-		resetValidations() {
-				this.validations.errors = [];
-		},
-		validate() {
-			if(this.fb.auth.email) {
-					if(/.+@.+\..+/.test(this.fb.auth.email) !== true) {
-					this.validations.errors.push(
-						`<strong>Coloque um email valido</strong>`
-					)
-				}
-			}
-			if(this.fb.auth.password) {
-				if(/.{6,}/.test(this.fb.auth.password) !== true) {
-					this.validations.errors.push(
-						`<strong>Sua senha precisa de no minimo 6 caracteres</strong>`
-					)
-				}
-			}
-			if(this.validations.errors.length <= 0) {
-				this.signIn()
-			}
-		},
 		signIn() {
 			this.fb.auth.fireAuth
 				.signInWithEmailAndPassword(this.fb.auth.email, this.fb.auth.password)
@@ -115,7 +93,41 @@ export default {
 				.catch((error) => {
 					alert(error)
 				})
-		}
+		},
+		validate() {
+			if(this.fb.auth.email) {
+					if(/.+@.+\..+/.test(this.fb.auth.email) !== true) {
+					this.validations.errors.push(
+						`<strong>Coloque um email valido</strong>`
+					)
+				}
+			}
+			if(!this.fb.auth.email) {
+				this.validations.errors.push(
+					`<strong>Campo "Email", não pode estar vazio</strong>`
+				)
+			}
+
+			if(this.fb.auth.password) {
+				if(/.{6,}/.test(this.fb.auth.password) !== true) {
+					this.validations.errors.push(
+						`<strong>Sua senha precisa de no minimo 6 caracteres</strong>`
+					)
+				}
+			}
+			if(!this.fb.auth.password) {
+				this.validations.errors.push(
+					`<strong>Campo "Senha", não pode estar vazio</strong>`
+				)
+			}
+
+			if(this.validations.errors.length <= 0) {
+				this.signIn()
+			}
+		},
+		resetValidations() {
+				this.validations.errors = [];
+		},
 	}
 }
 </script>
@@ -151,15 +163,16 @@ export default {
 				.v-input {
 					&.primary {
 						&--text {
-							color: #207fd8 !important;
-							caret-color: #207fd8 !important;
+							color: #1aa5ba !important;
+							caret-color: #1aa5ba !important;
 						}
 					}
 				}
 				.v-btn {
 					&.primary {
-						background-color: #207fd8 !important;
-						border-color: #207fd8 !important;
+						background-color: #1aa5ba !important;
+						border-color: #1aa5ba !important;
+						color: #f4f4f4;
 					}
 				}
 			}
@@ -181,8 +194,8 @@ export default {
 						color: #207fd8;
 					}
 					&.primary {
-						background-color: #45090c !important;
-						border-color: #45090c !important;
+						background-color: #1aa5ba !important;
+						border-color: #1aa5ba !important;
 					}
 				}
 			}
