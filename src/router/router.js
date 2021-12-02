@@ -16,25 +16,16 @@ const routes = [
   {
     path: '/signIn',
     name: 'SignIn',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "signIn" */ '../modules/authentication/SignIn/SignIn.vue')
   },
   {
     path: '/signUp',
     name: 'SignUp',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "signUp" */ '../modules/authentication/SignUp/SignUp.vue')
   },
   {
     path: '/todolist',
     name: 'TodoList',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "todolist" */ '../views/TodoList.vue'),
     meta: {
       requiresAuth: true,
@@ -43,10 +34,15 @@ const routes = [
   {
     path: '/myaccount',
     name: 'myAccount',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "myaccount" */ '../views/MyAccount.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+	},
+	{
+    path: '/manageusers',
+    name: 'ManageUsers',
+    component: () => import(/* webpackChunkName: "manageusers" */ '../modules/Users/ManageUsers/ManageUsers.vue'),
     meta: {
       requiresAuth: true,
     },
