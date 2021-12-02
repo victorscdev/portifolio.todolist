@@ -75,12 +75,12 @@
                 <v-col cols="3" class="d-flex">
                     <v-btn elevation="5" class="mr-3 btn-confirmar" @click.prevent="validateForm">Confirmar Edição</v-btn>
                     <v-btn elevation="5" color="red" class="mr-3" @click.prevent="clearForm">Limpar formulario</v-btn>
-                    <v-btn elevation="5" color="primary" @click.prevent="refactorPassword">Redefinir senha</v-btn>
+                    <v-btn elevation="5" color="primary" @click.prevent="refactorPassword" v-if="!refectorPassword">Redefinir senha</v-btn>
                 </v-col>
             </v-row>
         </v-container>
 
-        <div class="modal-error" v-if="validations.errors.length || validations.informations.length">
+        <div class="modal-validation" v-if="validations.errors.length || validations.informations.length">
             <div class="overlay">
                 <div class="modal-card">
                     <div class="modal-header">
@@ -98,7 +98,7 @@
                         <template v-if="validations.errors.length">
                             <h4>Resolva o(s) seguinte(s) erro(s) antes de continuar.</h4>
                             <ul>
-                                <li 
+                                <li
                                     class="erro"
                                     v-for="(error, index) in validations.errors"
                                     :key="`error-${index}`"
@@ -262,7 +262,7 @@ export default {
             if(this.fb.auth.user.password) {
                 this.updateUserPassword()
             }
-            setTimeout(() => { 
+            setTimeout(() => {
                 window.location.reload(true)
             }, 1000);
         },
@@ -275,11 +275,7 @@ export default {
             this.fb.auth.user.passwordConfirn = ''
         },
         refactorPassword() {
-            if(this.refectorPassword == true) {
-                this.refectorPassword =  false
-            } else if(this.refectorPassword == false) {
-                this.refectorPassword = true
-            }
+            this.refectorPassword = true
         },
         resetValidations() {
             this.validations.errors = []
