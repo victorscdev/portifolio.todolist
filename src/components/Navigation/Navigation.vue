@@ -24,12 +24,12 @@
 					class="v-avatar"
 					size="48"
 				>
-					{{ firebase.database.userSigla }}
+					{{ fb.db.userSigla }}
 				</v-avatar>
 				<div class="menu-user">
 					<h2>
 						<span>Olá,</span>
-						{{ firebase.database.userName }}
+						{{ fb.db.userName }}
 					</h2>
 					<a @click.prevent="signOut" class="btn-sair">Sair</a>
 				</div>
@@ -62,8 +62,9 @@
 				dense
 				nav
 			>
+			<template v-for="(navigation, index) in navigations">
 				<v-list-item
-					v-for="(navigation, index) in navigations"
+					v-if="navigation.userPermission"
 					:key="index"
 					link
 				>
@@ -75,8 +76,8 @@
 						<v-list-item-title>{{ navigation.title }}</v-list-item-title>
 					</v-list-item-content>
 				</router-link>
-
 				</v-list-item>
+			</template>
 			</v-list>
 		</v-navigation-drawer>
 	</div>
@@ -89,30 +90,34 @@ import db from '../../plugins/firebse'
 export default {
 	name: 'Navbar',
 	data: () => ({
-		firebase: {
-			database: {
+		fb: {
+			db: {
 				userCollection: db.collection('Users'),
 				user: [],
 				userName: '',
 				userSigla: '',
+				userRole: '',
 			},
-			authentication: {
+			auth: {
 				fireAuth: firebase.auth(),
-				userUID: '',
+				userUID: firebase.auth().currentUser.uid,
 			}
 		},
 		navigations: [
 				{
+						userPermission: null,
 						link: '/todolist',
 						title: 'Minhas Tarefas',
 						icon: 'mdi-checkbox-marked-circle-plus-outline'
 				},
 				{
+						userPermission: null,
 						link: '/myaccount',
 						title: 'Minha Conta',
 						icon: 'mdi-account'
 				},
 				{
+						userPermission: null,
 						link: '/manageusers',
 						title: 'Gerenciar Usuarios',
 						icon: 'mdi-account-tie'
@@ -126,15 +131,15 @@ export default {
 	}),
 	methods: {
 		handleDrawer() {
-			if (this.drawer == true) {
+			if (this.drawer === true) {
 				this.drawer = false;
-			} else if (this.drawer == false) {
+			} else if (this.drawer === false) {
 				this.drawer = true;
 			}
 		},
 		getUserDatabase() {
-			this.firebase.database.userCollection
-				.doc(this.firebase.authentication.userUID)
+			this.fb.db.userCollection
+				.doc(this.fb.auth.userUID)
 				.get()
 				.then((querySnapshot) => {
 					let userName = querySnapshot.data().name
@@ -147,29 +152,38 @@ export default {
 						userFirstSigla = userFirstSigla[0].split('')
 						userSecondSigla = userSecondSigla.split(' ')
 						userSecondSigla = userSecondSigla[0].split('')
-						this.firebase.database.userSigla = `${userFirstSigla[0]}${userSecondSigla[1]}`
+						this.fb.db.userSigla = `${userFirstSigla[0]}${userSecondSigla[1]}`
 
 					} else if(userName.length >= 2) {
 						userFirstSigla = userFirstSigla.split(' ')
 						userFirstSigla = userFirstSigla[0].split('')
 						userSecondSigla = userSecondSigla.split(' ')
 						userSecondSigla = userSecondSigla[1].split('')
-						this.firebase.database.userSigla = `${userFirstSigla[0]}${userSecondSigla[0]}`
+						this.fb.db.userSigla = `${userFirstSigla[0]}${userSecondSigla[0]}`
 					}
-					this.firebase.database.userName = userName[0]
+					this.fb.db.userName = userName[0]
+					this.fb.db.userRole = querySnapshot.data().role
+
+					this.getUserPermission()
 				})
 				.catch((error) => {
 					console.log("Error getting documents: ", error);
 				});
 		},
-		loggedInUser() {
-			this.firebase.authentication.fireAuth
-				.onAuthStateChanged((user) => {
-					this.firebase.authentication.userUID = user.uid
-				})
+		getUserPermission() {
+			for (let index = 0; index <= this.navigations.length; index++) {
+				if(this.fb.db.userRole == 'Admin') {
+        this.navigations[index].userPermission = true
+			} else if(this.fb.db.userRole == 'Default') {
+        this.navigations[index].userPermission = true
+        this.navigations[2].userPermission = false
+			}
+
+			}
+
 		},
 		signOut() {
-			this.firebase.authentication.fireAuth
+			this.fb.auth.fireAuth
 				.signOut()
 				.then(() => {
 					window.location.reload(true)
@@ -180,11 +194,11 @@ export default {
 				})
 		},
 	},
-	mounted() {
-		this.loggedInUser()
+	created() {
+		this.getUserDatabase()
 		setTimeout(() => {
-				this.getUserDatabase()
-		}, 1);
+			console.log(this.navigations);
+		}, 300);
 	}
 }
 </script>

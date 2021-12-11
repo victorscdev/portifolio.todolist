@@ -159,6 +159,7 @@ export default {
 					name: this.fb.db.setUser.name,
 					age: this.fb.db.setUser.age,
 					sex: this.fb.db.setUser.sex,
+					role: 'Default',
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				})

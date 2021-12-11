@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import firebase from 'firebase/app'
+import db from '../plugins/firebse'
 
 Vue.use(VueRouter)
 
@@ -45,7 +46,21 @@ const routes = [
     component: () => import(/* webpackChunkName: "manageusers" */ '../modules/Users/ManageUsers/ManageUsers.vue'),
     meta: {
       requiresAuth: true,
-    },
+		},
+		beforeEnter: (to, from, next) => {
+			const uid = firebase.auth().currentUser.uid
+			db.collection('Users')
+				.doc(uid)
+				.get()
+				.then((res) => {
+					const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+					let user = res.data().role
+
+					if (!requiresAuth && user == 'Admin') next('manageusers')
+					else if (requiresAuth && user ==  'Default') next('todolist')
+					else next()
+				})
+		}
   },
 ]
 

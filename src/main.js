@@ -5,6 +5,7 @@ import vuetify from './plugins/vuetify'
 import firebase from 'firebase'
 
 import '../src/plugins/firebse'
+import store from './store/store'
 
 Vue.config.productionTip = false
 
@@ -14,6 +15,7 @@ firebase.auth().onAuthStateChanged(() => {
     app = new Vue({
       vuetify,
       router,
+      store,
       render: h => h(App)
     }).$mount('#app')
   }
