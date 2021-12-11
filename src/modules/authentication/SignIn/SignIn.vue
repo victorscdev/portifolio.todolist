@@ -137,6 +137,9 @@ export default {
 	background: #121623;
 	height: 100vh;
 	width: 100%;
+	@media (max-width: 959.98px) {
+		height: 100%;
+	}
 		.container {
 			display: flex;
 			height: 100%;

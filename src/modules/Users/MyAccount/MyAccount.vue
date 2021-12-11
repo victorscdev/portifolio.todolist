@@ -72,10 +72,12 @@
                         </v-row>
                     </v-card>
                 </v-col>
-                <v-col cols="3" class="d-flex">
-                    <v-btn elevation="5" class="mr-3 btn-confirmar" @click.prevent="validateForm">Confirmar Edição</v-btn>
-                    <v-btn elevation="5" color="red" class="mr-3" @click.prevent="clearForm">Limpar formulario</v-btn>
-                    <v-btn elevation="5" color="primary" @click.prevent="refactorPassword" v-if="!refectorPassword">Redefinir senha</v-btn>
+                <v-col cols="12">
+									<div class="box-btn">
+                    <v-btn elevation="5" class="btn-confirmar" @click.prevent="validateForm">Confirmar Edição</v-btn>
+                    <v-btn elevation="5" color="red" class="btn-limpar" @click.prevent="clearForm">Limpar formulario</v-btn>
+                    <v-btn elevation="5" color="primary" class="btn-redefinir" @click.prevent="refactorPassword" v-if="!refectorPassword">Redefinir senha</v-btn>
+									</div>
                 </v-col>
             </v-row>
         </v-container>
@@ -298,10 +300,34 @@ export default {
             padding: 24px;
         }
 
-        .btn-confirmar {
-            background-color: #1aa5ba;
-            color: #f4f4f4;
-        }
+				.box-btn {
+					.btn-confirmar {
+							background-color: #1aa5ba;
+							color: #f4f4f4;
+							margin-right: 8px;
+
+							@media (max-width: 629.98px) {
+								width: 100%;
+								margin-bottom: 8px;
+								margin-right: 0;
+							}
+					}
+					.btn-limpar {
+							margin-right: 8px;
+
+							@media (max-width: 629.98px) {
+								width: 100%;
+								margin-bottom: 8px;
+								margin-right: 0;
+							}
+					}
+					.btn-redefinir {
+							@media (max-width: 629.98px) {
+								width: 100%;
+							}
+					}
+				}
+
     }
 
 </style>
