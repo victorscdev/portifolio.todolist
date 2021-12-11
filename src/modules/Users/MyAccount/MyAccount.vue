@@ -132,7 +132,7 @@
 
 <script>
 import firebase from 'firebase/app'
-import db from '../plugins/firebse'
+import db from '../../../plugins/firebse'
 
 export default {
     name: 'MyAccount',

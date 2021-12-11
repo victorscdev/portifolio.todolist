@@ -6,8 +6,8 @@
                     <h1>Minhas Tarefas</h1>
                 </v-col>
                 <v-col cols="10">
-                    <v-text-field 
-                        label="Nova Tafera" 
+                    <v-text-field
+                        label="Nova Tafera"
                         placeholder="Escreva uma tarefa"
                         v-model="firebase.database.task.name"
                         @keyup.enter="setTaskDatabase"
@@ -15,8 +15,8 @@
                     </v-text-field>
                 </v-col>
                 <v-col cols="1">
-                    <v-btn 
-                        large color="primary" 
+                    <v-btn
+                        large color="primary"
                         @click="setTaskDatabase"
                         >Adicionar
                     </v-btn>
@@ -51,7 +51,7 @@
 
 <script>
 import firebase from "firebase/app"
-import db from '../plugins/firebse'
+import db from '../../plugins/firebse'
 
 
 export default {
@@ -154,7 +154,7 @@ export default {
                     console.log(`Error: ${error}`);
                 });
         },
-        
+
     },
     mounted() {
         this.loggedInUser()
@@ -176,7 +176,7 @@ export default {
             padding: 24px;
             margin-top: 16px;
             margin-bottom: 16px;
-            
+
             .view-task {
                 h2 {
                     text-align: left;
