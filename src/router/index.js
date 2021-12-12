@@ -16,20 +16,18 @@ const routes = [
   {
     path: '/signIn',
     name: 'SignIn',
-    component: () => import(/* webpackChunkName: "signIn" */ '../modules/authentication/SignIn/SignIn.vue')
+    component: () => import(/* webpackChunkName: "signIn" */ '../modules/Auth/SignIn/SignIn.vue')
   },
   {
     path: '/signUp',
     name: 'SignUp',
-    component: () => import(/* webpackChunkName: "signUp" */ '../modules/authentication/SignUp/SignUp.vue')
+    component: () => import(/* webpackChunkName: "signUp" */ '../modules/Auth/SignUp/SignUp.vue')
 	},
 	{
     path: '/manageusers',
     name: 'ManageUsers',
-    component: () => import(/* webpackChunkName: "manageusers" */ '../modules/Users/ManageUsers/ManageUsers.vue'),
-    meta: {
-      requiresAuth: true,
-		},
+		meta: { requiresAuth: true },
+    component: () => import(/* webpackChunkName: "manageusers" */ '../modules/User/ManageUsers/ManageUsers.vue'),
 		beforeEnter: (to, from, next) => {
 			const uid = firebase.auth().currentUser.uid
 			db.collection('Users')
@@ -47,19 +45,15 @@ const routes = [
 	},
 	{
     path: '/myaccount',
-    name: 'MyAccount',
-    component: () => import(/* webpackChunkName: "myaccount" */ '../modules/Users/MyAccount/MyAccount.vue'),
-    meta: {
-      requiresAuth: true,
-    },
+		name: 'MyAccount',
+		meta: { requiresAuth: true },
+    component: () => import(/* webpackChunkName: "myaccount" */ '../modules/User/MyAccount/MyAccount.vue'),
 	},
 	{
     path: '/todolist',
-    name: 'TodoList',
-    component: () => import(/* webpackChunkName: "todolist" */ '../views/TodoList/TodoList.vue'),
-    meta: {
-      requiresAuth: true,
-    },
+		name: 'List',
+		meta: { requiresAuth: true },
+    component: () => import(/* webpackChunkName: "list" */ '../modules/Todo/List/List.vue'),
   },
 ]
 

@@ -12,7 +12,7 @@
 										type="text"
 										label="Nome"
 										placeholder="Seu nome"
-										v-model="fb.db.setUser.name"
+										v-model="user.name"
 										>
 									</v-text-field>
 								</v-col>
@@ -21,7 +21,7 @@
 										type="text"
 										label="Idade"
 										placeholder="Sua idade"
-										v-model="fb.db.setUser.age"
+										v-model="user.age"
 										>
 									</v-text-field>
 								</v-col>
@@ -29,7 +29,7 @@
 									<v-select
 										:items="sexSelect"
 										label="Sexo"
-										v-model="fb.db.setUser.sex"
+										v-model="user.sex"
 									></v-select>
 								</v-col>
 								<v-col cols="12" sm="6" md="4">
@@ -37,7 +37,7 @@
 										type="email"
 										label="Email"
 										placeholder="email@email.com"
-										v-model="fb.auth.setAuth.email"
+										v-model="user.email"
 										>
 									</v-text-field>
 								</v-col>
@@ -45,7 +45,7 @@
 									<v-text-field
 										type="password"
 										label="Senha"
-										v-model="fb.auth.setAuth.password"
+										v-model="user.password"
 										>
 									</v-text-field>
 								</v-col>
@@ -54,7 +54,7 @@
 										type="password"
 										label="Confirmar Senha"
 										placeholder="Coloque a mesma senha que está acima"
-										v-model="fb.auth.setAuth.passwordConfirm"
+										v-model="user.passwordConfirm"
 										>
 									</v-text-field>
 								</v-col>
@@ -105,30 +105,20 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import db from '../../../plugins/firebse'
+import AuthRepository from '../AuthRepository'
+import UserRepository from '../../User/UserRepository'
 
 export default {
 	name: "SignUp",
 	data: () => ({
-		fb: {
-			db: {
-				userCollection: db.collection('Users'),
-				setUser: {
-						name: '',
-						age: '',
-						sex: '',
-				}
-			},
-			auth: {
-				fireAuth: firebase.auth(),
-				setAuth: {
-					email: '',
-					password: '',
-					passwordConfirm: '',
-					uid: '',
-				},
-			}
+		user: {
+			email: '',
+			password: '',
+			passwordConfirm: '',
+			name: '',
+			age: '',
+			sex: '',
+			uid: '',
 		},
 		sexSelect: ['M', 'F'],
 		validations: {
@@ -137,96 +127,95 @@ export default {
 	}),
 	methods: {
 		signUp() {
-			this.fb.auth.fireAuth
-				.createUserWithEmailAndPassword(
-					this.fb.auth.setAuth.email,
-					this.fb.auth.setAuth.password
-				)
-				.then((userCredential) => {
-					JSON.stringify(userCredential)
-					this.fb.auth.setAuth.uid = userCredential.user.uid
-					this.setUserFromDatabase()
-					return this.$router.replace('/todolist')
-				})
-				.catch((error) => {
-					alert(error)
-				})
+			AuthRepository.signUp(
+				this.user.email,
+				this.user.password
+			)
+			.then(() => {
+				this.createUserDB()
+				return this.$router.replace('/todolist')
+			})
+			.catch((err) => {
+				if(err.code == 'auth/email-already-in-use') {
+					this.validations.errors.push(
+						`<strong>Email já cadastrado</strong>`
+					)
+				}
+			})
 		},
-		setUserFromDatabase() {
-			this.fb.db.userCollection
-				.doc(this.fb.auth.setAuth.uid)
-				.set({
-					name: this.fb.db.setUser.name,
-					age: this.fb.db.setUser.age,
-					sex: this.fb.db.setUser.sex,
-					role: 'Default',
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				})
+		createUserDB() {
+			UserRepository.create({
+				name: this.user.name,
+				age: this.user.age,
+				sex: this.user.sex,
+				role: 'Default',
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			})
 		},
 		validate() {
-			if(!this.fb.db.setUser.name) {
+			if(!this.user.name) {
 				this.validations.errors.push(
 					`<strong>Campo "Nome", não pode estar vazio</strong>`
 				)
 			}
-			if(this.fb.db.setUser.name) {
-				if(this.fb.db.setUser.name.length <= 2) {
+			if(this.user.name) {
+				if(this.user.name.length <= 2) {
 					this.validations.errors.push(
 						`<strong>Campo "Nome", obrigário ter no minimo 3 letras</strong>`
 					)
 				}
 			}
 
-			if(!this.fb.db.setUser.age) {
+			if(!this.user.age) {
 				this.validations.errors.push(
 					`<strong>Campo "Idade", não pode estar vazio</strong>`
 				)
 			}
-			if(this.fb.db.setUser.age) {
-				if(this.fb.db.setUser.age.length >= 4) {
+			if(this.user.age) {
+				if(this.user.age.length >= 4) {
 					this.validations.errors.push(
 						`<strong>Campo "Idade", não pode ter mais que 3 caracteres</strong>`
 					)
 				}
 			}
 
-			if(!this.fb.db.setUser.sex) {
+			if(!this.user.sex) {
 				this.validations.errors.push(
 					`<strong>Campo "Sexo", não pode estar vazio</strong>`
 				)
 			}
 
-			if(this.fb.auth.setAuth.email) {
-				if(/.+@.+\..+/.test(this.fb.auth.setAuth.email) !== true) {
+			if(this.user.email) {
+				if(/.+@.+\..+/.test(this.user.email) !== true) {
 					this.validations.errors.push(
 						`<strong>Coloque um email valido</strong>`
 					)
 				}
 			}
-			if(!this.fb.auth.setAuth.email) {
+			if(!this.user.email) {
 				this.validations.errors.push(
 					`<strong>Campo "Email", não pode estar vazio</strong>`
 				)
 			}
 
-			if(!this.fb.auth.setAuth.password) {
+			if(!this.user.password) {
 				this.validations.errors.push(
 					`<strong>Campo "Senha", não pode estar vazio</strong>`
 				)
 			}
-			if(this.fb.auth.setAuth.password) {
-				if(/.{6,}/.test(this.fb.auth.setAuth.password) !== true) {
+			if(this.user.password) {
+				if(/.{6,}/.test(this.user.password) !== true) {
 					this.validations.errors.push(
 						`<strong>Sua senha precisa de no minimo 6 caracteres</strong>`
 					)
 				}
-				if(!this.fb.auth.setAuth.passwordConfirm) {
+				if(!this.user.passwordConfirm) {
 						this.validations.errors.push(
 								`<strong>Campo de comparação de senha obrigatorio</strong>`
 						)
 				}
-				if(this.fb.auth.setAuth.passwordConfirm !== this.fb.auth.setAuth.password) {
+				if(this.user.passwordConfirm !== this.user.password) {
 					this.validations.errors.push(
 						`<strong>Os campos de "Senha" e "Confirmar Senha" não estão iguais!</strong>`
 					)

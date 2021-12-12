@@ -8,7 +8,7 @@
 							<h1>Logar</h1>
 							<hr>
 							<v-text-field
-								v-model="fb.auth.email"
+								v-model="email"
 								type="email"
 								label="Email"
 								placeholder="email@email.com"
@@ -16,7 +16,7 @@
 							</v-text-field>
 
 							<v-text-field
-								v-model="fb.auth.password"
+								v-model="password"
 								type="password"
 								label="Senha"
 								>
@@ -67,66 +67,67 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
+import AuthRepository from '../AuthRepository'
 
 export default {
 	name: 'SignIn',
 	data: () => ({
-		fb: {
-			auth: {
-				fireAuth: firebase.auth(),
-				email: '',
-				password: '',
-			}
-		},
+		email: '',
+		password: '',
 		validations: {
 			errors: [],
 		},
 	}),
 	methods: {
 		signIn() {
-			this.fb.auth.fireAuth
-				.signInWithEmailAndPassword(this.fb.auth.email, this.fb.auth.password)
+			AuthRepository.signIn(this.email, this.password)
 				.then(() => {
 					this.$router.replace('/todolist');
 				})
-				.catch((error) => {
-					alert(error)
+				.catch((err) => {
+					if(err.code == "auth/user-not-found") {
+						this.validations.errors.push(
+							`<strong>Email invalido</strong>`
+						)
+					}
+					if(err.code == "auth/wrong-password") {
+						this.validations.errors.push(
+							`<strong>Senha invalida</strong>`
+						)
+					}
 				})
 		},
 		validate() {
-			if(this.fb.auth.email) {
-					if(/.+@.+\..+/.test(this.fb.auth.email) !== true) {
+			if(this.email) {
+					if(/.+@.+\..+/.test(this.email) !== true) {
 					this.validations.errors.push(
 						`<strong>Coloque um email valido</strong>`
 					)
 				}
+				if(!this.email) {
+					this.validations.errors.push(
+						`<strong>Campo "Email", não pode estar vazio</strong>`
+					)
+				}
 			}
-			if(!this.fb.auth.email) {
-				this.validations.errors.push(
-					`<strong>Campo "Email", não pode estar vazio</strong>`
-				)
-			}
-
-			if(this.fb.auth.password) {
-				if(/.{6,}/.test(this.fb.auth.password) !== true) {
+			if(this.password) {
+				if(/.{6,}/.test(this.password) !== true) {
 					this.validations.errors.push(
 						`<strong>Sua senha precisa de no minimo 6 caracteres</strong>`
 					)
 				}
+				if(!this.password) {
+					this.validations.errors.push(
+						`<strong>Campo "Senha", não pode estar vazio</strong>`
+					)
+				}
 			}
-			if(!this.fb.auth.password) {
-				this.validations.errors.push(
-					`<strong>Campo "Senha", não pode estar vazio</strong>`
-				)
-			}
-
 			if(this.validations.errors.length <= 0) {
 				this.signIn()
 			}
 		},
 		resetValidations() {
-				this.validations.errors = [];
+			this.validations.errors = [];
 		},
 	}
 }
@@ -144,7 +145,7 @@ export default {
 			display: flex;
 			height: 100%;
 			.row {
-					align-items: center;
+				align-items: center;
 			}
 		}
 		.card-login {

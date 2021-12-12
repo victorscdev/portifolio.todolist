@@ -24,12 +24,12 @@
 					class="v-avatar"
 					size="48"
 				>
-					{{ fb.db.userSigla }}
+					{{ user.userSigla }}
 				</v-avatar>
 				<div class="menu-user">
 					<h2>
 						<span>Olá,</span>
-						{{ fb.db.userName }}
+						{{ user.userName }}
 					</h2>
 					<a @click.prevent="signOut" class="btn-sair">Sair</a>
 				</div>
@@ -84,40 +84,32 @@
 </template>
 
 <script>
-import firebase from "firebase/app"
-import db from '../../plugins/firebse'
+import AuthRepository from '../../modules/Auth/AuthRepository'
+import UserRepository from '../../modules/User/UserRepository'
 
 export default {
 	name: 'Navbar',
 	data: () => ({
-		fb: {
-			db: {
-				userCollection: db.collection('Users'),
-				user: [],
-				userName: '',
-				userSigla: '',
-				userRole: '',
-			},
-			auth: {
-				fireAuth: firebase.auth(),
-				userUID: firebase.auth().currentUser.uid,
-			}
+		user: {
+			userName: '',
+			userSigla: '',
+			userRole: '',
 		},
 		navigations: [
 				{
-						userPermission: null,
+						userPermission: false,
 						link: '/todolist',
 						title: 'Minhas Tarefas',
 						icon: 'mdi-checkbox-marked-circle-plus-outline'
 				},
 				{
-						userPermission: null,
+						userPermission: false,
 						link: '/myaccount',
 						title: 'Minha Conta',
 						icon: 'mdi-account'
 				},
 				{
-						userPermission: null,
+						userPermission: false,
 						link: '/manageusers',
 						title: 'Gerenciar Usuarios',
 						icon: 'mdi-account-tie'
@@ -137,10 +129,8 @@ export default {
 				this.drawer = true;
 			}
 		},
-		getUserDatabase() {
-			this.fb.db.userCollection
-				.doc(this.fb.auth.userUID)
-				.get()
+		fetchUserDB() {
+			UserRepository.fetchUser()
 				.then((querySnapshot) => {
 					let userName = querySnapshot.data().name
 					userName = userName.split(' ')
@@ -152,39 +142,34 @@ export default {
 						userFirstSigla = userFirstSigla[0].split('')
 						userSecondSigla = userSecondSigla.split(' ')
 						userSecondSigla = userSecondSigla[0].split('')
-						this.fb.db.userSigla = `${userFirstSigla[0]}${userSecondSigla[1]}`
+						this.user.userSigla = `${userFirstSigla[0]}${userSecondSigla[1]}`
 
 					} else if(userName.length >= 2) {
 						userFirstSigla = userFirstSigla.split(' ')
 						userFirstSigla = userFirstSigla[0].split('')
 						userSecondSigla = userSecondSigla.split(' ')
 						userSecondSigla = userSecondSigla[1].split('')
-						this.fb.db.userSigla = `${userFirstSigla[0]}${userSecondSigla[0]}`
+						this.user.userSigla = `${userFirstSigla[0]}${userSecondSigla[0]}`
 					}
-					this.fb.db.userName = userName[0]
-					this.fb.db.userRole = querySnapshot.data().role
-
-					this.getUserPermission()
+					this.user.userName = userName[0]
+					this.user.userRole = querySnapshot.data().role
+					this.userACL()
 				})
-				.catch((error) => {
-					console.log("Error getting documents: ", error);
-				});
 		},
-		getUserPermission() {
+		userACL() {
 			for (let index = 0; index <= this.navigations.length; index++) {
-				if(this.fb.db.userRole == 'Admin') {
-        this.navigations[index].userPermission = true
-			} else if(this.fb.db.userRole == 'Default') {
-        this.navigations[index].userPermission = true
-        this.navigations[2].userPermission = false
-			}
+				if(this.user.userRole == 'Admin') {
+					this.navigations[index].userPermission = true
+				} else if(this.user.userRole == 'Default') {
+					this.navigations[index].userPermission = true
+					this.navigations[2].userPermission = false
+				}
 
 			}
 
 		},
 		signOut() {
-			this.fb.auth.fireAuth
-				.signOut()
+			AuthRepository.signOut()
 				.then(() => {
 					window.location.reload(true)
 					setTimeout(() => {
@@ -195,10 +180,7 @@ export default {
 		},
 	},
 	created() {
-		this.getUserDatabase()
-		setTimeout(() => {
-			console.log(this.navigations);
-		}, 300);
+		this.fetchUserDB()
 	}
 }
 </script>
