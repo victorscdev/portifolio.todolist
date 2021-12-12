@@ -16,12 +16,12 @@ const routes = [
   {
     path: '/signIn',
     name: 'SignIn',
-    component: () => import(/* webpackChunkName: "signIn" */ '../modules/Authentication/SignIn/SignIn.vue')
+    component: () => import(/* webpackChunkName: "signIn" */ '../modules/authentication/SignIn/SignIn.vue')
   },
   {
     path: '/signUp',
     name: 'SignUp',
-    component: () => import(/* webpackChunkName: "signUp" */ '../modules/Authentication/SignUp/SignUp.vue')
+    component: () => import(/* webpackChunkName: "signUp" */ '../modules/authentication/SignUp/SignUp.vue')
 	},
 	{
     path: '/manageusers',
